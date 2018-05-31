@@ -5,29 +5,35 @@ import matplotlib.pyplot as plt
 import core.engine.classes as c
 
 
-def start(points_number, central_number):
+def start(points_number, central_number, constant=0):
     epoch = 0
     plane = init(points_number, central_number)
-    find_centrals(plane.points, plane.old_centrals)
-    draw_centrals(plane.old_centrals)
+
+    if constant < central_number:
+        for i in range(constant):
+            plane.old[i].move = False
+
+    find_centrals(plane.points, plane.old)
+    draw_centrals(plane.old)
 
     while True:
         epoch = epoch + 1
-        plane.new_centrals = copy.deepcopy(plane.old_centrals)
-        update_centrals(plane.new_centrals)
-        clean_points(plane.new_centrals)
-        find_centrals(plane.points, plane.new_centrals)
+        plane.new = copy.deepcopy(plane.old)
+        update_centrals(plane.new)
+        clean_points(plane.new)
+        find_centrals(plane.points, plane.new)
         print('Epoch: ', epoch)
-        draw_centrals(plane.new_centrals)
-        if centrals_equals_position(plane.old_centrals, plane.new_centrals):
+        draw_centrals(plane.new)
+        if centrals_equals_position(plane.old, plane.new):
             break
         else:
-            plane.old_centrals = copy.deepcopy(plane.new_centrals)
+            plane.old = copy.deepcopy(plane.new)
 
 
 def update_centrals(centrals):
     for i in range(len(centrals)):
-        move_central(centrals[i])
+        if centrals[i].move:
+            move_central(centrals[i])
 
 
 def move_central(central):
@@ -59,10 +65,10 @@ def clean_points(centrals):
 
 
 def init(points_number, central_number):
-    plane = c.Plane
+    plane = c.Plane([], [], [])
 
     plane.points = get_random_points(points_number)
-    plane.old_centrals = get_random_centrals(central_number, points_number)
+    plane.old = get_random_centrals(central_number, points_number)
 
     return plane
 
@@ -85,23 +91,27 @@ def centrals_equals_position(centrals_1, centrals_2):
 def get_random_centrals(n, max_coordinate):
     random_centrals = []
     for i in range(n):
-        random_centrals.append(c.Central(random.uniform(0, m.sqrt(max_coordinate)), random.uniform(0, m.sqrt(max_coordinate)), []))
+        random_centrals.append(c.Centroid([], random.uniform(0, m.sqrt(max_coordinate)), random.uniform(0, m.sqrt(max_coordinate))))
     return random_centrals
 
 
 def get_random_points(n):
-    random_points = []
-    for index in range(n):
-        new_point = c.Point(random.uniform(0, m.sqrt(n)), random.uniform(0, m.sqrt(n)))
-        random_points.append(new_point)
-    return random_points
+    return [c.Point(random.uniform(0, m.sqrt(n)), random.uniform(0, m.sqrt(n))) for i in range(n)]
 
 
 def draw_centrals(centrals):
     colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
     for i in range(len(centrals)):
-        plt.plot(centrals[i].x, centrals[i].y, (colors[i] + '+'))
+        if centrals[i].move:
+            plt.plot(centrals[i].x, centrals[i].y, (colors[i] + '+'))
+        else:
+            plt.plot(centrals[i].x, centrals[i].y, 'k+')
+
         for j in range(len(centrals[i].points)):
-            plt.plot(centrals[i].points[j].x, centrals[i].points[j].y, (colors[i] + 'o'))
+            if centrals[i].move:
+                plt.plot(centrals[i].points[j].x, centrals[i].points[j].y, (colors[i] + 'o'))
+            else:
+                plt.plot(centrals[i].points[j].x, centrals[i].points[j].y, 'ko')
+
     plt.show()
     plt.clf()
