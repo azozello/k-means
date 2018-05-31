@@ -102,8 +102,16 @@ def get_random_points(n):
 def draw_centrals(centrals):
     colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
     for i in range(len(centrals)):
-        plt.plot(centrals[i].x, centrals[i].y, (colors[i] + '+'))
+        if centrals[i].move:
+            plt.plot(centrals[i].x, centrals[i].y, (colors[i] + '+'))
+        else:
+            plt.plot(centrals[i].x, centrals[i].y, 'k+')
+
         for j in range(len(centrals[i].points)):
-            plt.plot(centrals[i].points[j].x, centrals[i].points[j].y, (colors[i] + 'o'))
+            if centrals[i].move:
+                plt.plot(centrals[i].points[j].x, centrals[i].points[j].y, (colors[i] + 'o'))
+            else:
+                plt.plot(centrals[i].points[j].x, centrals[i].points[j].y, 'ko')
+
     plt.show()
     plt.clf()
