@@ -82,21 +82,6 @@ def centrals_equals_position(centrals_1, centrals_2):
     return True
 
 
-def centrals_equals(centrals_1, centrals_2):
-    if len(centrals_1) != len(centrals_2):
-        return False
-    else:
-        for i in range(len(centrals_1)):
-            if len(centrals_1[i].points) != len(centrals_2[i].points):
-                return False
-            else:
-                for j in range(len(centrals_1[i].points)):
-                    if (centrals_1[i].points[j].x != centrals_2[i].points[j].x) \
-                            or (centrals_1[i].points[j].y != centrals_2[i].points[j].y):
-                        return False
-    return True
-
-
 def get_random_centrals(n, max_coordinate):
     random_centrals = []
     for i in range(n):
