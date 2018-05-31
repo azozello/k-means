@@ -4,7 +4,6 @@ import core.engine.functions as f
 
 
 class TestStringMethods(unittest.TestCase):
-
     def test_centrals_equality(self):
         centrals_old = [c.Central(1, 2, [c.Point(2, 4)]), c.Central(3, 4, [c.Point(5, 8)])]
         centrals_new = [c.Central(1, 2, [c.Point(6, 4)]), c.Central(3, 4, [c.Point(5, 8)])]
